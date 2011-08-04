@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+#
+# Receive push notifications from Mozilla projects with gnome-shell.
+# Currently this is done by polling each repository's Atom feed.
+# It would be nice to hook this up to mozilla-pulse so we block.
+#
+# Copyright Sean Stangl <sstangl@mozilla.com>, 2011.
+
+# Subscribe to feeds by changing this list.
+atomlist = [
+	"http://hg.mozilla.org/projects/ionmonkey/atom-log"
+]
+
+import feedparser
+from gi.repository import Notify
+from time import sleep
+
+# Cache of last known updated time, for each feed.
+atomcache = []
+
+Notify.init('mozilla-hg-notify')
+
+def receive_update(d, previous):
+	#for i in range(0, len(d.entries)):
+	for i in range(0, min(4, len(d.entries))):
+		ent = d.entries[i]
+		if ent.updated == previous:
+			return
+
+		n = Notify.Notification.new (
+			ent.author_detail.name,
+			ent.title,
+			"No icon for now."
+		)
+		n.show()
+
+	return
+
+def main():
+	# Remember the latest entry for each feed.
+	for list in atomlist:
+		d = feedparser.parse(list)
+		#atomcache.append(d.entries[0].updated)
+		atomcache.append('')
+
+	# Poll feeds occasionally.
+	while True:
+		for i in range(0, len(atomlist)):
+			d = feedparser.parse(atomlist[i])
+			if d.entries[0].updated != atomcache[i]:
+				receive_update(d, atomcache[i])
+				atomcache[i] = d.entries[0].updated
+		sleep(30)
+
+	return
+
+if __name__ == '__main__':
+	main()
+

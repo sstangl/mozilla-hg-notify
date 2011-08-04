@@ -1,0 +1,23 @@
+
+  Receive Hg push notifications from Mozilla projects with gnome-shell.
+
+  Copyright Sean Stangl <sstangl@mozilla.com>, 2011.
+
+OH NO: THIS PROGRAM POLLS. I AM SO SORRY
+
+  This program really should be written to use the Mozilla Pulse
+	(http://pulse.mozilla.org) event system. Unfortunately, as of this writing,
+	the repository I actually want to watch does not push Pulse events, and
+  mozillapulse (http://hg.mozilla.org/users/clegnitto_mozilla.com/mozillapulse/)
+	is unable to receive events even from mozilla-central anyway.
+
+	Thus, polling, at least until a better way exists.
+	What could possibly go wrong?
+
+USAGE
+
+	Modify source to poke the repositories you care about.
+	  The default repository is for the IonMonkey project.
+  Be running gnome-shell.
+	Run the program.
+
