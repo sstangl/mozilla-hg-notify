@@ -21,7 +21,6 @@ atomcache = []
 Notify.init('mozilla-hg-notify')
 
 def receive_update(d, previous):
-	#for i in range(0, len(d.entries)):
 	for i in range(0, min(4, len(d.entries))):
 		ent = d.entries[i]
 		if ent.updated == previous:
@@ -40,8 +39,7 @@ def main():
 	# Remember the latest entry for each feed.
 	for list in atomlist:
 		d = feedparser.parse(list)
-		#atomcache.append(d.entries[0].updated)
-		atomcache.append('')
+		atomcache.append(d.entries[0].updated)
 
 	# Poll feeds occasionally.
 	while True:
