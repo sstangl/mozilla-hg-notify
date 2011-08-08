@@ -14,6 +14,7 @@ atomlist = [
 import feedparser
 from gi.repository import Notify
 from time import sleep
+import sys
 
 # Cache of last known updated time, for each feed.
 atomcache = []
@@ -26,12 +27,15 @@ def receive_update(d, previous):
 		if ent.updated == previous:
 			return
 
-		n = Notify.Notification.new (
-			ent.author_detail.name,
-			ent.title,
-			"No icon for now."
-		)
-		n.show()
+		try:
+			n = Notify.Notification.new (
+				ent.author_detail.name,
+				ent.title,
+				"No icon for now."
+			)
+			n.show()
+		except:
+			print >> sys.stderr, "Error: Notification failed."
 
 	return
 
@@ -43,12 +47,12 @@ def main():
 
 	# Poll feeds occasionally.
 	while True:
+		sleep(30)
 		for i in range(0, len(atomlist)):
 			d = feedparser.parse(atomlist[i])
 			if d.entries[0].updated != atomcache[i]:
 				receive_update(d, atomcache[i])
 				atomcache[i] = d.entries[0].updated
-		sleep(30)
 
 	return
 
